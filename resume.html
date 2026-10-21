@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume | PDF Viewer</title>
+    <link rel="stylesheet" href="portfolio.css">
+</head>
+<body>
+
+<body oncontextmenu="return false;"> <header>
+        <div class="logo">Emman Tubera<span></span></div>
+        <nav>
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="resume.html" class="active">Resume</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="certificates.html">Certificates</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="page-title" style="text-align: center; margin-bottom: 40px;">
+            <h1>Curriculum Vitae</h1>
+            <p>Review my formal professional background and work history directly inside your browser.</p>
+        </div>
+
+        <div class="pdf-secure-wrapper">
+            <div class="click-shield"></div>
+
+            <img src="emman resume.jpg" alt="Emman Tubera Resume" class="resume-image-view">
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Emman Tubera. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        document.onkeydown = disableKeys;
+        
+        function disableKeys(e) {
+            var key = e.which || window.event.keyCode;
+            
+            // Blocks Ctrl+C (Copy), Ctrl+S (Save), Ctrl+P (Print)
+            if (e.ctrlKey && (key == 67 || key == 83 || key == 80)) {
+                if (window.event) {
+                    window.event.returnValue = false;
+                } else {
+                    e.preventDefault();
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>
