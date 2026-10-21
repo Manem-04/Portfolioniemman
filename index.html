@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Index | Welcome</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent: #38bdf8;
+            --accent-hover: #0ea5e9;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: #f8fafc;
+        }
+
+        /* Ambient Glow Effect */
+        .ambient-glow {
+            box-shadow: 0 0 50px -10px rgba(56, 189, 248, 0.15);
+        }
+
+        /* Progress Fill Animation */
+        @keyframes progressBar {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        .progress-fill {
+            animation: progressBar 3s linear forwards;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-6 relative selection:bg-cyan-500 selection:text-slate-900">
+
+    <!-- Subtle Background Radial Glow -->
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+    <!-- Main Container -->
+    <main class="w-full max-w-md mx-auto text-center flex flex-col items-center justify-center z-10 space-y-8">
+        
+        <!-- Big Bold Friendly Greeting Header -->
+        <div class="space-y-3">
+            <h1 class="text-5xl sm:text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-cyan-300 to-teal-300">
+                Hello!
+            </h1>
+            <p class="text-slate-400 text-base sm:text-lg font-medium">
+                Welcome to my portfolio. Preparing everything for you...
+            </p>
+        </div>
+
+        <!-- Progress Indicator Card -->
+        <div class="w-full bg-[#1e293b] p-5 rounded-2xl border border-slate-700/60 shadow-2xl ambient-glow">
+            <div class="flex justify-between items-center mb-2.5 text-xs font-bold tracking-wider uppercase">
+                <span class="text-[#38bdf8] tracking-widest">Loading Portfolio</span>
+                <span id="percent-text" class="text-slate-300 font-mono">0%</span>
+            </div>
+
+            <!-- Progress Track -->
+            <div class="w-full h-3 bg-slate-900 rounded-full overflow-hidden p-0.5 border border-slate-700/50">
+                <!-- Progress Fill -->
+                <div class="h-full bg-gradient-to-r from-sky-400 to-cyan-400 rounded-full progress-fill relative">
+                    <div class="absolute inset-0 bg-white/20 rounded-full animate-pulse"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Countdown & Manual Navigation Button -->
+        <div class="space-y-5 w-full">
+            <p class="text-slate-400 text-sm sm:text-base">
+                Redirecting to home in 
+                <span id="countdown" class="font-bold text-[#38bdf8] font-mono text-lg px-2 py-0.5 rounded bg-slate-800 border border-slate-700">3</span> 
+                seconds...
+            </p>
+
+            <div>
+                <a href="home.html" 
+                   class="inline-block w-full sm:w-auto px-8 py-3.5 rounded-xl bg-[#38bdf8] hover:bg-[#0ea5e9] text-slate-950 font-bold text-base transition-all duration-200 shadow-lg shadow-sky-500/20 active:scale-95">
+                    Go to Home Now
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer Note -->
+    <footer class="absolute bottom-6 text-center text-xs text-slate-500 font-medium">
+        Portfolio Index
+    </footer>
+
+    <!-- Vanilla JavaScript for Countdown & Redirect -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let seconds = 3;
+            const countdownEl = document.getElementById('countdown');
+            const percentEl = document.getElementById('percent-text');
+            const targetUrl = 'home.htm';
+
+            // Percentage Counter Logic (3 Seconds Duration)
+            const startTime = Date.now();
+            const duration = 3000;
+
+            const updateProgress = () => {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(Math.floor((elapsed / duration) * 100), 100);
+                
+                if (percentEl) {
+                    percentEl.textContent = `${progress}%`;
+                }
+
+                if (progress < 100) {
+                    requestAnimationFrame(updateProgress);
+                }
+            };
+            requestAnimationFrame(updateProgress);
+
+            // 1-second countdown timer leading to automatic redirect
+            const timer = setInterval(() => {
+                seconds--;
+                if (countdownEl) {
+                    countdownEl.textContent = seconds;
+                }
+
+                if (seconds <= 0) {
+                    clearInterval(timer);
+                    window.location.href = targetUrl;
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
