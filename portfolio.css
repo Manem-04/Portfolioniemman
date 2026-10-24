@@ -1,4 +1,3 @@
-
 /* --- Core Styles & Resets --- */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -29,6 +28,14 @@ header {
 
 header ul { display: flex; list-style: none; }
 header ul li { margin-left: 25px; }
+
+/* --- The dark-mode toggle lives inside a nav <li>:
+       neutralize list-item spacing and align the button vertically --- */
+header ul li.theme-toggle-item {
+    display: flex;
+    align-items: center;
+}
+
 header ul li a {
     text-decoration: none;
     color: #4a5568;
@@ -134,6 +141,7 @@ footer { background: #1a202c; color: #a0aec0; text-align: center; padding: 25px;
 #about { padding-top: 100px; padding-bottom: 100px; }
 .about-container {
     display: flex;
+    flex-wrap: wrap;         /* FIX: lets the row wrap instead of overflowing the card */
     align-items: flex-start;
     gap: 40px;
     max-width: 1000px;
@@ -144,16 +152,28 @@ footer { background: #1a202c; color: #a0aec0; text-align: center; padding: 25px;
     box-shadow: 0 5px 20px rgba(0,0,0,0.08);
 }
 .profile-picture {
+    flex-shrink: 0;          /* FIX: the photo is never squeezed by the flex row */
+    max-width: 100%;         /* FIX: the photo can never be wider than the card */
     width: 300px; height: 300px;
     object-fit: cover;
     border-radius: 50%;
     border: 5px solid #3182ce;
     box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-    background: #cbd5e0; /* placeholder tone for test */
 }
-.about-text h2 { font-size: 2.25rem; color: #1a202c; margin-bottom: 15px; }
-.about-text p { color: #4a5568; font-size: 1.1rem; line-height: 1.8; margin-bottom: 20px; }
-
+.about-text {
+    flex: 1;                 /* text column takes all remaining width */
+    min-width: 0;            /* lets it shrink inside the flex row */
+    overflow-wrap: anywhere; /* breaks long words/URLs instead of overflowing */
+}
+.about-text h2 { font-size: 2.25rem; color: #1a202c; margin-bottom: 15px; overflow-wrap: anywhere; }
+.about-text p {
+    color: #4a5568;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: 20px;
+    overflow-wrap: anywhere;
+    max-width: 100%;         /* paragraph can never exceed its column */
+}
 /* --- Project image hover + lightbox --- */
 .project-img-click-wrapper {
     position: relative;
@@ -164,7 +184,6 @@ footer { background: #1a202c; color: #a0aec0; text-align: center; padding: 25px;
     border-radius: 6px;
     margin: 15px 0;
     cursor: pointer;
-    background: #a0aec0; /* placeholder tone */
 }
 .project-card-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; }
 .img-hover-overlay {
@@ -303,27 +322,44 @@ header,
    ===== PHONE VIEW (portrait) =====
    ======================================================= */
 @media (max-width: 768px) {
-    body { padding-top: 120px; } /* extra room: toggle now floats beside the logo row */
+    /* Keep everything on ONE row: logo left, menu+toggle right, never stacking */
+    body { padding-top: 70px; }
 
     header {
-        height: auto;
-        flex-direction: column;
-        padding: 10px 5%;
-        gap: 6px;
+        height: 70px;
+        flex-direction: row;
+        padding: 0 4%;
+        gap: 10px;
     }
-    header ul { flex-wrap: wrap; justify-content: center; }
-    header ul li { margin: 0 10px; }
-    header ul li a { font-size: 0.9rem; }
 
-    /* Toggle floats at the top-right of the stacked header,
-       level with the logo — never squeezed into the menu row */
+    .logo { font-size: 1.1rem; white-space: nowrap; flex-shrink: 0; }
+
+    header ul {
+        flex-wrap: nowrap;          /* links and toggle always share one line */
+        justify-content: flex-end;
+        align-items: center;
+        margin-left: auto;
+        min-width: 0;               /* lets the ul shrink instead of overflowing */
+        overflow-x: auto;           /* worst case: links scroll, never wrap or overlap */
+        scrollbar-width: none;
+    }
+    header ul::-webkit-scrollbar { display: none; }
+    header ul li { margin-left: 14px; }
+    header ul li a { font-size: 0.85rem; white-space: nowrap; }
+
+    /* Toggle stays as a normal item at the end of the menu row —
+       same line as the links, never wrapping below them */
+    header ul li.theme-toggle-item {
+        margin-left: 14px;
+        flex-shrink: 0;             /* the button itself never gets squeezed */
+        display: flex;
+        align-items: center;
+    }
     #darkModeToggle {
-        position: absolute;
-        top: 10px;
-        right: max(5%, env(safe-area-inset-right));
-        width: 44px;   /* 44px+ = comfortable tap target on touch screens */
-        height: 44px;
-        font-size: 20px;
+        position: static;
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
     }
 
     main { padding: 25px 15px; }
@@ -340,6 +376,18 @@ header,
     .drive-iframe-wrapper { height: 240px; }
 
     #about { padding-top: 40px; padding-bottom: 40px; }
+
+    /* FIX: stack the About card in portrait — photo on top, centered text below,
+       so the h2/paragraph can never be squeezed out of the white card */
+    .about-container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 30px;
+        gap: 25px;
+    }
+    .profile-picture { width: 200px; height: 200px; }
+    .about-text { width: 100%; }
     .about-text h2 { font-size: 1.7rem; }
     .about-text p { font-size: 1rem; }
 
@@ -355,14 +403,16 @@ header,
     header {
         height: 48px;
         flex-direction: row;
-        padding: 0 3%;
+        padding: 0 48px 0 3%; /* right padding reserves the toggle's spot so it can't overlap the menu */
     }
-    .logo { font-size: 1.1rem; }
+
     header ul li { margin-left: 15px; }
     header ul li a { font-size: 0.85rem; }
 
-    /* Shrunken toggle that fits inside the slim 48px bar */
+    /* Shrunken toggle stays in the flex row, so the menu can never slide under it */
+    header ul li.theme-toggle-item { margin-left: 15px; flex-shrink: 0; }
     #darkModeToggle {
+        position: static;
         width: 34px;
         height: 34px;
         font-size: 16px;
@@ -379,10 +429,15 @@ header,
         gap: 15px;
     }
 
-    .about-container { flex-direction: row; text-align: left; padding: 20px; gap: 20px; }
-    .profile-picture { width: 140px; height: 140px; }
-    #about { padding-top: 20px; padding-bottom: 20px; }
-
-    .lightbox-content img { max-height: 60vh; }
-    .lightbox-close-btn { top: 5px; right: 10px; }
+    .about-container {
+        flex-direction: column;   /* photo on top, text below */
+        align-items: center;
+        text-align: center;
+        padding: 30px;
+        gap: 25px;
+    }
+    .profile-picture { width: 200px; height: 200px; }
+    .about-text { flex: 1 1 auto; min-width: 0; width: 100%; }
+    .about-text h2 { font-size: 1.7rem; }
+    .about-text p { font-size: 1rem; }
 }
