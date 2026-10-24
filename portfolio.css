@@ -325,33 +325,56 @@ header,
 }
 
 /* =======================================================
-   ===== PHONE VIEW (portrait) =====
+   ===== PHONE VIEW (portrait) — FIXED =====
+   Nav now gets its OWN full-width second row under the logo,
+   so it never fights the logo + toggle for width again.
    ======================================================= */
 @media (max-width: 768px) {
-    body { padding-top: 70px; }
+    /* header is taller now (two rows) — body padding must match */
+    body { padding-top: 112px; }  /* CHANGED: was 70px */
 
     header {
-        height: 70px;
-        flex-direction: row;
-        padding: 0 4%;
-        gap: 10px;
+        height: auto;              /* CHANGED: was 70px — rows size themselves instead */
+        flex-wrap: wrap;           /* CHANGED: lets the nav wrap onto its own second row */
+        padding: 10px 4% 10px;
+        gap: 8px;
     }
 
-    .logo { font-size: 1.1rem; white-space: nowrap; flex-shrink: 0; }
+    .logo { font-size: 1.15rem; white-space: nowrap; flex-shrink: 0; }
 
-    /* Only the LINKS live in the scrollable row now — the toggle is outside it,
-       pinned at the right edge, so it can never be clipped off-screen again */
+    /* CHANGED: nav drops to its OWN full-width row under the logo */
+    nav {
+        order: 3;
+        flex: 1 1 100%;
+        min-width: 0;
+    }
+
     header ul {
         flex-wrap: nowrap;
-        justify-content: flex-end;
+        justify-content: space-between;  /* CHANGED: was flex-end — flex-end pushes Home
+                                            off the LEFT edge where it can never be
+                                            scrolled back */
         align-items: center;
-        min-width: 0;
-        overflow-x: auto;           /* worst case: links scroll, never wrap or overlap */
+        width: 100%;
+        overflow-x: auto;                /* safety net on very narrow screens */
         scrollbar-width: none;
     }
     header ul::-webkit-scrollbar { display: none; }
-    header ul li { margin-left: 12px; }
-    header ul li a { font-size: 0.85rem; white-space: nowrap; }
+    header ul li { margin-left: 0; }
+    header ul li a {
+        font-size: 0.9rem;
+        white-space: nowrap;
+        display: inline-block;           /* makes the tap target taller */
+        padding: 6px 2px;
+    }
+
+    /* toggle stays on row 1, pinned to the right edge, always visible */
+    #darkModeToggle {
+        margin-left: auto;
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
 
     main { padding: 25px 15px; }
     .page-title h1 { font-size: 1.8rem; }
@@ -383,7 +406,9 @@ header,
 }
 
 /* =======================================================
-   ===== PHONE VIEW (landscape / rotated) =====
+   ===== PHONE VIEW (landscape / rotated) — FIXED =====
+   One row in landscape, but overflow scrolls RIGHT
+   (flex-start), never pushing Home off the left edge.
    ======================================================= */
 @media (max-height: 500px) and (orientation: landscape) {
     body { padding-top: 55px; }
@@ -391,10 +416,21 @@ header,
     header {
         height: 48px;
         flex-direction: row;
+        flex-wrap: nowrap;               /* CHANGED: one row in landscape — no vertical room to spare */
         padding: 0 3%;
         gap: 8px;
     }
 
+    nav { margin-left: auto; }           /* CHANGED: right-aligns links WITHOUT the flex-end trap */
+
+    header ul {
+        flex-wrap: nowrap;
+        justify-content: flex-start;     /* CHANGED: overflow scrolls to the RIGHT, Home stays reachable */
+        min-width: 0;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+    header ul::-webkit-scrollbar { display: none; }
     header ul li { margin-left: 12px; }
     header ul li a { font-size: 0.85rem; }
 
