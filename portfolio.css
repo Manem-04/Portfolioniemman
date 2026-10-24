@@ -407,3 +407,85 @@ width: 150px;
 height:150px;
 object-fit: contain;
 }
+
+/* ===== PHONE VIEW (portrait) ===== */
+@media (max-width: 768px) {
+    body { padding-top: 110px; }
+
+    /* Header stacks: logo on top, menu below */
+    header {
+        height: auto;
+        flex-direction: column;
+        padding: 10px 5%;
+        gap: 6px;
+    }
+    header ul {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    header ul li { margin: 0 10px; }
+    header ul li a { font-size: 0.9rem; }
+
+    main { padding: 25px 15px; }
+    .page-title h1 { font-size: 1.8rem; }
+
+    /* Grids become one column and can't overflow narrow screens */
+    .skills-grid,
+    .projects-grid,
+    .embed-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .skills-card, .project-card { padding: 20px; }
+    .drive-iframe-wrapper { height: 240px; }
+
+    /* About section */
+    #about { padding-top: 40px; padding-bottom: 40px; }
+    .about-text h2 { font-size: 1.7rem; }
+    .about-text p { font-size: 1rem; }
+
+    /* Lightbox */
+    .lightbox-close-btn { top: -40px; right: 5px; }
+}
+
+/* ===== PHONE VIEW (landscape / rotated) ===== */
+@media (max-height: 500px) and (orientation: landscape) {
+    body { padding-top: 55px; }
+
+    /* Slim single-row header to save vertical space */
+    header {
+        height: 48px;
+        flex-direction: row;
+        padding: 0 3%;
+    }
+    .logo { font-size: 1.1rem; }
+    header ul li { margin-left: 15px; }
+    header ul li a { font-size: 0.85rem; }
+
+    main { padding: 20px 4%; min-height: auto; }
+    .page-title { margin-bottom: 20px; }
+    .page-title h1 { font-size: 1.6rem; }
+
+    /* Two columns side by side works well in landscape */
+    .skills-grid,
+    .projects-grid,
+    .embed-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    /* About: picture left, text right, smaller photo */
+    .about-container {
+        flex-direction: row;
+        text-align: left;
+        padding: 20px;
+        gap: 20px;
+    }
+    .profile-picture { width: 140px; height: 140px; }
+    #about { padding-top: 20px; padding-bottom: 20px; }
+
+    /* Lightbox image must fit the short screen */
+    .lightbox-content img { max-height: 60vh; }
+    .lightbox-close-btn { top: 5px; right: 10px; }
+}
