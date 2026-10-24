@@ -10,31 +10,36 @@ body {
 }
 
 /* --- Shared Navigation Header --- */
+/* Header = [ logo | nav links | toggle ] — the toggle is a DIRECT child of
+   <header>, outside the scrollable link row, so it is always on-screen. */
 header {
     position: fixed;
     top: 0; left: 0; right: 0;
     height: 70px;
     background: #ffffff;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
+    gap: 12px;
     padding: 0 5%;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     z-index: 1000;
 }
 
-.logo { font-size: 1.5rem; font-weight: 700; color: #1a202c; }
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a202c;
+    margin-right: auto;   /* pushes nav + toggle to the right edge */
+    flex-shrink: 0;
+    white-space: nowrap;
+}
 .logo span { color: #3182ce; }
 
-header ul { display: flex; list-style: none; }
-header ul li { margin-left: 25px; }
+nav { display: flex; min-width: 0; }  /* lets the link list shrink inside the header row */
 
-/* --- The dark-mode toggle lives inside a nav <li>:
-       neutralize list-item spacing and align the button vertically --- */
-header ul li.theme-toggle-item {
-    display: flex;
-    align-items: center;
-}
+header ul { display: flex; list-style: none; min-width: 0; }
+header ul li { margin-left: 25px; }
 
 header ul li a {
     text-decoration: none;
@@ -141,7 +146,7 @@ footer { background: #1a202c; color: #a0aec0; text-align: center; padding: 25px;
 #about { padding-top: 100px; padding-bottom: 100px; }
 .about-container {
     display: flex;
-    flex-wrap: wrap;         /* FIX: lets the row wrap instead of overflowing the card */
+    flex-wrap: wrap;         /* lets the row wrap instead of overflowing the card */
     align-items: flex-start;
     gap: 40px;
     max-width: 1000px;
@@ -152,8 +157,8 @@ footer { background: #1a202c; color: #a0aec0; text-align: center; padding: 25px;
     box-shadow: 0 5px 20px rgba(0,0,0,0.08);
 }
 .profile-picture {
-    flex-shrink: 0;          /* FIX: the photo is never squeezed by the flex row */
-    max-width: 100%;         /* FIX: the photo can never be wider than the card */
+    flex-shrink: 0;          /* the photo is never squeezed by the flex row */
+    max-width: 100%;         /* the photo can never be wider than the card */
     width: 300px; height: 300px;
     object-fit: cover;
     border-radius: 50%;
@@ -234,12 +239,13 @@ footer { background: #1a202c; color: #a0aec0; text-align: center; padding: 25px;
     width: 42px;
     height: 42px;
     font-size: 20px;
+    font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif; /* guarantee the sun/moon glyph renders on every OS */
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: background 0.3s, transform 0.3s;
-    flex-shrink: 0;
+    flex-shrink: 0;   /* the button itself can NEVER be squeezed or pushed off-screen */
 }
 #darkModeToggle:hover { background: #ebf8ff; transform: scale(1.08); }
 
@@ -322,7 +328,6 @@ header,
    ===== PHONE VIEW (portrait) =====
    ======================================================= */
 @media (max-width: 768px) {
-    /* Keep everything on ONE row: logo left, menu+toggle right, never stacking */
     body { padding-top: 70px; }
 
     header {
@@ -334,33 +339,19 @@ header,
 
     .logo { font-size: 1.1rem; white-space: nowrap; flex-shrink: 0; }
 
+    /* Only the LINKS live in the scrollable row now — the toggle is outside it,
+       pinned at the right edge, so it can never be clipped off-screen again */
     header ul {
-        flex-wrap: nowrap;          /* links and toggle always share one line */
+        flex-wrap: nowrap;
         justify-content: flex-end;
         align-items: center;
-        margin-left: auto;
-        min-width: 0;               /* lets the ul shrink instead of overflowing */
+        min-width: 0;
         overflow-x: auto;           /* worst case: links scroll, never wrap or overlap */
         scrollbar-width: none;
     }
     header ul::-webkit-scrollbar { display: none; }
-    header ul li { margin-left: 14px; }
+    header ul li { margin-left: 12px; }
     header ul li a { font-size: 0.85rem; white-space: nowrap; }
-
-    /* Toggle stays as a normal item at the end of the menu row —
-       same line as the links, never wrapping below them */
-    header ul li.theme-toggle-item {
-        margin-left: 14px;
-        flex-shrink: 0;             /* the button itself never gets squeezed */
-        display: flex;
-        align-items: center;
-    }
-    #darkModeToggle {
-        position: static;
-        width: 40px;
-        height: 40px;
-        font-size: 18px;
-    }
 
     main { padding: 25px 15px; }
     .page-title h1 { font-size: 1.8rem; }
@@ -376,9 +367,6 @@ header,
     .drive-iframe-wrapper { height: 240px; }
 
     #about { padding-top: 40px; padding-bottom: 40px; }
-
-    /* FIX: stack the About card in portrait — photo on top, centered text below,
-       so the h2/paragraph can never be squeezed out of the white card */
     .about-container {
         flex-direction: column;
         align-items: center;
@@ -403,16 +391,14 @@ header,
     header {
         height: 48px;
         flex-direction: row;
-        padding: 0 48px 0 3%; /* right padding reserves the toggle's spot so it can't overlap the menu */
+        padding: 0 3%;
+        gap: 8px;
     }
 
-    header ul li { margin-left: 15px; }
+    header ul li { margin-left: 12px; }
     header ul li a { font-size: 0.85rem; }
 
-    /* Shrunken toggle stays in the flex row, so the menu can never slide under it */
-    header ul li.theme-toggle-item { margin-left: 15px; flex-shrink: 0; }
     #darkModeToggle {
-        position: static;
         width: 34px;
         height: 34px;
         font-size: 16px;
@@ -430,7 +416,7 @@ header,
     }
 
     .about-container {
-        flex-direction: column;   /* photo on top, text below */
+        flex-direction: column;
         align-items: center;
         text-align: center;
         padding: 30px;
